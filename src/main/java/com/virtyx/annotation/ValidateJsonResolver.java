@@ -66,7 +66,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 
 		for (HttpMessageConverter<?> messageConverter : getMessageConverters()) {
 			if (messageConverter.canRead(paramType, contentType)) {
-				log.debug("Reading [{}] as \"{}\" using [{}]", paramType.getName(), contentType, messageConverter);
+				log.warn("Reading [{}] as \"{}\" using [{}]", paramType.getName(), contentType, messageConverter);
 				return ((HttpMessageConverter<T>) messageConverter).read(paramType, inputMessage);
 			}
 		}
@@ -91,15 +91,16 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, 
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-		log.debug("This is the big apple");
+		log.warn("This is the big apple");
 		String paramName = getParamName(parameter); 
-		log.debug("Param Name REsolve: {}", paramName);
+		log.warn("Param Name REsolve: {}", paramName);
 		Object arg;
+		System.out.println("LOL GOT IT: " + paramName);
 
 		try {
 			arg = readWithMessageConverters(createInputMessage(webRequest, paramName), parameter, parameter.getParameterType());
-			log.debug("CONVERTED and Created: {}", arg);
-			log.debug("Created: {}", arg.getClass().toString());
+			log.warn("CONVERTED and Created: {}", arg);
+			log.warn("Created: {}", arg.getClass().toString());
 			validate(
 					arg,
 					getValidationClass(parameter)
@@ -122,7 +123,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		}
 		catch (MissingServletRequestParameterException ex) {
 			// handled below
-			log.debug("EXCEPTION");
+			log.warn("EXCEPTION");
 			ex.printStackTrace();
 			arg = null;
 		}				
@@ -158,7 +159,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		String paramName = ""; //(annot != null) ? annot.value() : "";
 		if (paramName.length() == 0) {
 			paramName = parameter.getParameterName();
-			log.debug("Param Name: {}", paramName);
+			log.warn("Param Name: {}", paramName);
 			//			Assert.notNull(paramName, "Request parameter name for argument type [" + parameter.getParameterType().getName()
 			//					+ "] not available, and parameter name information not found in class file either.");
 		}
