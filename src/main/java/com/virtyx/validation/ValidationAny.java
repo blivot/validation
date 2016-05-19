@@ -16,7 +16,8 @@ import com.virtyx.exception.ValidationException;
  * @author ethanmick
  *
  */
-public class ValidationAny <T> {
+@SuppressWarnings("rawtypes")
+public class ValidationAny <T, V extends ValidationAny> {
 
 	protected Collection<Constraint<?>> constraints;
 
@@ -35,6 +36,11 @@ public class ValidationAny <T> {
 	
 	public Validation<?> getParent() {
 		return parent;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected V getThis() {
+		return (V)this;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -79,29 +85,29 @@ public class ValidationAny <T> {
 		return this.parent.property(name);
 	}
 	
-	public ValidationAny<T> required() {
+	public V required() {
 		this.constraints.add(new AnyConstraint.Required());
-		return this;
+		return getThis();
 	}
 	
-	public ValidationAny<T> optional() {
-		return this;
+	public V optional() {
+		return getThis();
 	}
 	
-	public ValidationAny<T> forbidden() {
-		return this;
+	public V forbidden() {
+		return getThis();
 	}
 	
-	public ValidationAny<T> valid(Object value) {
+	public V valid(Object value) {
 		this.constraints.add(new AnyConstraint.Valid(value));
-		return this;
+		return getThis();
 	}
 	
-	public ValidationAny<T> only(Object value) {
+	public V only(Object value) {
 		return valid(value);
 	}
 	
-	public ValidationAny<T> equal(Object value) {
+	public V equal(Object value) {
 		return valid(value);
 	}
 

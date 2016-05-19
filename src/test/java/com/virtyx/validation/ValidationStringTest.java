@@ -96,4 +96,11 @@ public class ValidationStringTest {
 		assertEquals(0, errors.size());
 	}
 	
+	@Test
+	public void testMinValidOutOfOrder() throws Exception {
+		target.valid("thisisokay").min(5);
+		List<ValidationError> errors = target.validateValue("key", "thisisokay");
+		assertEquals(0, errors.size());
+	}
+	
 }

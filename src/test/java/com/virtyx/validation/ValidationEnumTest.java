@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.virtyx.exception.ValidationError;
 
-@SuppressWarnings("unchecked")
+//@SuppressWarnings("unchecked")
 public class ValidationEnumTest {
 	
 	private ValidationEnum<Planet> target;
@@ -36,6 +36,14 @@ public class ValidationEnumTest {
 	@Test
 	public void testConvertToEnumLambda() throws Exception {
 		target.fromInt( i-> Planet.values()[i] ).valid(Planet.EARTH); //THE ONE TRUE PLANET
+		
+		List<ValidationError> errors = target.validateValue("key", 2);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testValidAndConvert() throws Exception {
+		target.valid(Planet.EARTH).fromInt( (i)-> Planet.values()[i]);
 		
 		List<ValidationError> errors = target.validateValue("key", 2);
 		assertEquals(0, errors.size());

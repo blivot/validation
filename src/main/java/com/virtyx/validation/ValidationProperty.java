@@ -10,7 +10,7 @@ public class ValidationProperty {
 	
 	private String property;
 	
-	private ValidationAny<?> type;
+	private ValidationAny<?, ?> type;
 	
 	public ValidationProperty(Validation<?> parent, String property) {
 		this.parent = parent; 
