@@ -1,31 +1,53 @@
 package com.virtyx.constraint;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class AnyConstraint extends Constraint<Object> {
 
-import com.virtyx.exception.ValidationError;
-import com.virtyx.exception.ValidationException;
+	public AnyConstraint(Class<Object> type) {
+		super(type);
+	}
 
-public abstract class AnyConstraint extends Constraint {
-	
+	protected Object convert(String key, Object value) {
+		return value;
+	}
+
 	static public class Required extends AnyConstraint {
-		
-		private final static String ERROR = "'%s' is required";
-		
-		public List<ValidationError> validate(String key, Object toValidate) throws ValidationException {
-			System.out.println("MAKE SURE IT IS HERE: " + toValidate);
-			if (toValidate != null) return null;
 
-			List<ValidationError> errs = new ArrayList<ValidationError>();
+		private final static String ERROR = "'%s' is required";
+
+		public Required() {
+			super(Object.class);
+		}
+
+		@Override
+		public boolean valid(Object v) {
+			return v != null;
+		}
+
+		@Override
+		protected String getErrorMessage(String key, Object object) {
+			return String.format(ERROR, key);
+		}
+	}
+
+	static public class Valid extends AnyConstraint {
+
+		private final static String ERROR = "'%s' must equal '%s'";
+
+		private Object value;
 			
-			errs.add(
-					new ValidationError(
-							key,
-							toValidate,
-							String.format(ERROR, key)
-							)
-					);
-			return errs;
+		public Valid(Object value) {
+			super(Object.class);
+			this.value = value;
+		}
+
+		@Override
+		public boolean valid(Object v) {
+			return v.equals(value);
+		}
+
+		@Override
+		protected String getErrorMessage(String key, Object object) {
+			return String.format(ERROR, object, value);
 		}
 	}
 }

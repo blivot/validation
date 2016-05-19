@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.virtyx.constraint.Constraint;
+import com.virtyx.converter.Converter;
+import com.virtyx.exception.ConvertException;
 import com.virtyx.exception.ValidationError;
 import com.virtyx.exception.ValidationException;
 
@@ -37,10 +39,6 @@ public class Validation <V> {
 	
 	private Map<String, ValidationProperty> properties;
 	
-	protected Collection<Constraint> constraints;
-	
-	protected Validation<V> parent;
-	
 	public Validation() {
 		this(null);
 	}
@@ -48,19 +46,11 @@ public class Validation <V> {
 	public Validation(Class<V> clazz) {
 		this.clazz = clazz;
 		this.properties = new HashMap<String, ValidationProperty>();
-		this.constraints = new ArrayList<Constraint>();
-		this.parent = null;
 	}
 	
 	public ValidationProperty property(String name) {
-		System.out.println("THIS: " + this);
-		Validation<V> p = getParent();
-		System.out.println("Parent: " + p);
-		if (p == null) p = this;
-		System.out.println("Parent 2: " + p);
-		
-		ValidationProperty vp = new ValidationProperty(p, name);
-		p.addProperty(name, vp);
+		ValidationProperty vp = new ValidationProperty(this, name);
+		addProperty(name, vp);
 		return vp;
 	}
 
@@ -70,9 +60,6 @@ public class Validation <V> {
 
 	/**
 	 * You can probably set a few different modes.
-	 * 
-	 * For now, if it comes up to an error, it'll throw an exception
-	 * 
 	 * 
 	 * 
 	 */
@@ -88,33 +75,18 @@ public class Validation <V> {
 				ValidationProperty prop = properties.get(key);
 				errs.addAll(prop.validate(key, coerced.get(key)));
 			}
+		} else if (json instanceof Collection) {
+			//Validation a collection
 		}
 		
 		return errs;
 	}
-	
-	public List<ValidationError> validateValue(String key, Object value) {
-		List<ValidationError> errs = new ArrayList<ValidationError>();
-		
-		for (Constraint c : constraints) {
-			List<ValidationError> e = new ArrayList<ValidationError>();
-			try {
-				e = c.validate(key, value);
-			} catch (ValidationException ex) {
-				e.add(ex.getError());
-			}
 
-			if (e != null && e.size() > 0) {
-				errs.addAll(e);
-			}
-		}
-		return errs;
+	public Class<V> getClazz() {
+		return clazz;
 	}
 
-	public Validation<V> getParent() {
-		return parent;
+	public void setClazz(Class<V> clazz) {
+		this.clazz = clazz;
 	}
-	
-	
-
 }

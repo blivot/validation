@@ -2,7 +2,6 @@ package com.virtyx.validation;
 
 import static org.junit.Assert.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -27,7 +26,7 @@ public class ValidationStringTest {
 	}
 	
 	@Test
-	public void testMinInValid() throws Exception {
+	public void testMinInvalid() throws Exception {
 		target.min(5);
 		
 		List<ValidationError> errors = target.validateValue("key", "hi");
@@ -36,7 +35,7 @@ public class ValidationStringTest {
 		ValidationError error = errors.get(0);
 		assertEquals("key", error.getKey());
 		assertEquals(
-				"The string 'hi' needs to be at least 5 characters long.",
+				"The string 'hi' needs to be at least 5 characters long",
 				error.getMessage()
 		);
 	}
@@ -45,7 +44,13 @@ public class ValidationStringTest {
 	public void testMinNotString() throws Exception {
 		target.min(0);
 		List<ValidationError> errors = target.validateValue("k", 10);
-		assertEquals(0, errors.size());
+		assertEquals(1, errors.size());
+		
+		ValidationError error = errors.get(0);
+		assertEquals(
+				"Failed to convert the value of 'k' into a String",
+				error.getMessage()
+		);
 	}
 	
 	@Test
@@ -57,8 +62,38 @@ public class ValidationStringTest {
 		ValidationError error = errors.get(0);
 		assertEquals("k", error.getKey());
 		assertEquals(
-				"Failed to convert the input into a String",
+				"Failed to convert the value of 'k' into a String",
 				error.getMessage()
 		);
 	}
+	
+	@Test
+	public void testMaxValid() throws Exception {
+		target.max(5);
+		List<ValidationError> errors = target.validateValue("key", "okay");
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testMaxInvalid() throws Exception {
+		target.max(5);
+		
+		List<ValidationError> errors = target.validateValue("key", "longstring");
+		assertEquals(1, errors.size());
+		
+		ValidationError error = errors.get(0);
+		assertEquals("key", error.getKey());
+		assertEquals(
+				"The string 'longstring' needs to be less than or equal to 5 characters long",
+				error.getMessage()
+		);
+	}
+	
+	@Test
+	public void testMaxConvertToString() throws Exception {
+		target.max(3).convertToString();
+		List<ValidationError> errors = target.validateValue("key", 100);
+		assertEquals(0, errors.size());
+	}
+	
 }

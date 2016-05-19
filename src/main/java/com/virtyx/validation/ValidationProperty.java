@@ -6,13 +6,13 @@ import com.virtyx.exception.ValidationError;
 
 public class ValidationProperty {
 	
-	private Validation parent;
+	private Validation<?> parent;
 	
 	private String property;
 	
-	private Validation type;
+	private ValidationAny<?> type;
 	
-	public ValidationProperty(Validation parent, String property) {
+	public ValidationProperty(Validation<?> parent, String property) {
 		this.parent = parent; 
 		this.property = property;
 	}
@@ -27,9 +27,21 @@ public class ValidationProperty {
 		return (ValidationNumber) this.type;
 	}
 	
-	@SuppressWarnings("unchecked")
+	public ValidationEnum enumm(Class<?> enumm) {
+		this.type = new ValidationEnum(this.parent, enumm);
+		return (ValidationEnum) this.type;
+	}
+	
 	public List<ValidationError> validate(String key, Object value) {
 		return this.type.validateValue(key, value);
+	}
+
+	public String getProperty() {
+		return property;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 }

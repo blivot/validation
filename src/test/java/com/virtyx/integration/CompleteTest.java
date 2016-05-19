@@ -2,7 +2,6 @@ package com.virtyx.integration;
 
 import static org.junit.Assert.*;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class CompleteTest {
 	public void testComplexObject() throws Exception {
 		target
 			.property("id").number().min(0)
-			.property("name").string().required();
+			.property("name").string().min(0).required();
 
 		json.put("id", 3);
 
@@ -49,6 +48,7 @@ public class CompleteTest {
 	 * @author ethanmick
 	 *
 	 */
+	@SuppressWarnings("unused")
 	private static class Animal {
 
 		private int id;
@@ -57,6 +57,22 @@ public class CompleteTest {
 
 		public Animal() {
 
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 
 	}
