@@ -85,11 +85,13 @@ public class Validation <V> {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public List<ValidationError> validate(Object json) {
+	public List<ValidationError> validate(Object json, Container container) {
 		log.debug("VAlidate {}", json);
 
 		List<ValidationError> errs = new ArrayList<ValidationError>();
 		if (json instanceof Map) {
+			Map<String, Object> toReturn = new HashMap<String, Object>();
+			
 			log.debug("It's a Map");
 			Map<String, Object> coerced = (Map<String, Object>)json;
 			Set<String> visitedKeys = new HashSet<String>();
@@ -98,7 +100,13 @@ public class Validation <V> {
 				log.debug("VALIDATING: " + key);
 				visitedKeys.add(key);
 				ValidationProperty prop = properties.get(key);
-				errs.addAll(prop.validate(key, coerced.get(key)));
+				Container c = new Container();
+				List<ValidationError> innerErrors = prop.validate(key, coerced.get(key), c);
+				if (innerErrors.size() > 0) {
+					errs.addAll(innerErrors);	
+				} else {
+					toReturn.put(key, c.object);
+				}
 			}
 
 			if (!allowUnknown) {
@@ -115,8 +123,11 @@ public class Validation <V> {
 							);
 				}
 			}
-
-
+			
+			if (errs.size() == 0) {
+				container.object = toReturn;
+			}
+			
 		} else if (json instanceof Collection) {
 			//Validation a collection
 		}

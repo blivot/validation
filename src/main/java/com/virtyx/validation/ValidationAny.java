@@ -49,7 +49,7 @@ public class ValidationAny <T, V extends ValidationAny> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ValidationError> validateValue(final String key, final Object value) {
+	public List<ValidationError> validateValue(final String key, final Object value, final Container container) {
 		List<ValidationError> errs = new ArrayList<ValidationError>();
 		
 		T toValidate = null;
@@ -83,6 +83,9 @@ public class ValidationAny <T, V extends ValidationAny> {
 				errs.addAll(e);
 			}
 		}
+		
+		if (errs.size() == 0) container.object = toValidate;
+		
 		return errs;
 	}
 	

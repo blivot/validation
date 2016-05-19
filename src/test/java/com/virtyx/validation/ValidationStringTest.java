@@ -12,16 +12,19 @@ import com.virtyx.exception.ValidationError;
 public class ValidationStringTest {
 
 	private ValidationString target;
+	
+	private Container c;
 
 	@Before
 	public void setup() {
 		target = new ValidationString(null);
+		c = new Container();
 	}
 
 	@Test
 	public void testMinValid() throws Exception {
 		target.min(5);
-		List<ValidationError> errors = target.validateValue("key", "testing");
+		List<ValidationError> errors = target.validateValue("key", "testing", c);
 		assertEquals(0, errors.size());
 	}
 	
@@ -29,7 +32,7 @@ public class ValidationStringTest {
 	public void testMinInvalid() throws Exception {
 		target.min(5);
 		
-		List<ValidationError> errors = target.validateValue("key", "hi");
+		List<ValidationError> errors = target.validateValue("key", "hi", c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -43,7 +46,7 @@ public class ValidationStringTest {
 	@Test
 	public void testMinNotString() throws Exception {
 		target.min(0);
-		List<ValidationError> errors = target.validateValue("k", 10);
+		List<ValidationError> errors = target.validateValue("k", 10, c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -56,7 +59,7 @@ public class ValidationStringTest {
 	@Test
 	public void testMinBadInput() throws Exception {
 		target.min(1);
-		List<ValidationError> errors = target.validateValue("k", new Object());
+		List<ValidationError> errors = target.validateValue("k", new Object(), c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -70,7 +73,7 @@ public class ValidationStringTest {
 	@Test
 	public void testMaxValid() throws Exception {
 		target.max(5);
-		List<ValidationError> errors = target.validateValue("key", "okay");
+		List<ValidationError> errors = target.validateValue("key", "okay", c);
 		assertEquals(0, errors.size());
 	}
 	
@@ -78,7 +81,7 @@ public class ValidationStringTest {
 	public void testMaxInvalid() throws Exception {
 		target.max(5);
 		
-		List<ValidationError> errors = target.validateValue("key", "longstring");
+		List<ValidationError> errors = target.validateValue("key", "longstring", c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -92,14 +95,14 @@ public class ValidationStringTest {
 	@Test
 	public void testMaxConvertToString() throws Exception {
 		target.max(3).convertToString();
-		List<ValidationError> errors = target.validateValue("key", 100);
+		List<ValidationError> errors = target.validateValue("key", 100, c);
 		assertEquals(0, errors.size());
 	}
 	
 	@Test
 	public void testMinValidOutOfOrder() throws Exception {
 		target.valid("thisisokay").min(5);
-		List<ValidationError> errors = target.validateValue("key", "thisisokay");
+		List<ValidationError> errors = target.validateValue("key", "thisisokay", c);
 		assertEquals(0, errors.size());
 	}
 	

@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.virtyx.exception.ValidationError;
+import com.virtyx.validation.Container;
 import com.virtyx.validation.Validation;
 
 public class CompleteTest {
@@ -35,7 +36,8 @@ public class CompleteTest {
 
 		json.put("id", 3);
 
-		List<ValidationError> errors = target.validate(json);
+		Container c = new Container();
+		List<ValidationError> errors = target.validate(json, c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -54,7 +56,8 @@ public class CompleteTest {
 		json.put("id", 3);
 		json.put("random", "key");
 
-		List<ValidationError> errors = target.validate(json);
+		Container c = new Container();
+		List<ValidationError> errors = target.validate(json, c);
 		assertEquals(1, errors.size());
 		
 		ValidationError error = errors.get(0);
@@ -75,7 +78,8 @@ public class CompleteTest {
 		json.put("id", 3);
 		json.put("random", "key");
 
-		List<ValidationError> errors = target.validate(json);
+		Container c = new Container();
+		List<ValidationError> errors = target.validate(json, c);
 		assertEquals(0, errors.size());
 	}
 

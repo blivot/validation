@@ -45,6 +45,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBody
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.virtyx.exception.BulkValidationException;
 import com.virtyx.exception.ValidationError;
+import com.virtyx.validation.Container;
 import com.virtyx.validation.Validation;
 
 public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
@@ -95,13 +96,14 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		String paramName = getParamName(parameter); 
 		log.debug("Param Name REsolve: {}", paramName);
 		Object arg;
+		Object sanitized = null;
 		System.out.println("LOL GOT IT: " + paramName);
 
 		try {
 			arg = readWithMessageConverters(createInputMessage(webRequest, paramName), parameter, parameter.getParameterType());
 			log.debug("CONVERTED and Created: {}", new Object[] {arg});
 			log.debug("Created: {}", arg.getClass().toString());
-			validate(
+			sanitized = validate(
 					arg,
 					getValidationClass(parameter)
 					);
@@ -128,28 +130,25 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 			arg = null;
 		}				
 
-		RequestPart annot = parameter.getParameterAnnotation(RequestPart.class);
-		boolean isRequired = (annot == null || annot.required());
-
-		if (arg == null && isRequired) {
-			throw new MissingServletRequestParameterException(paramName, parameter.getParameterType().getSimpleName());
-		}
-
-		return arg;
+		return sanitized;
 	}
 
 	@SuppressWarnings({ "unchecked", "serial" })
-	private void validate(Object arg, Class<? extends ValidateJsonDefault> clazz) throws Exception {
+	private Object validate(Object arg, Class<? extends ValidateJsonDefault> clazz) throws Exception {
 
 		ValidateJsonDefault validatorBuilder; 
 		Constructor<?> ctor = clazz.getConstructor();
 		validatorBuilder = (ValidateJsonDefault) ctor.newInstance();
 
 		Validation validator = validatorBuilder.getValidation();
-		List<ValidationError> errors = validator.validate(arg);
+		
+		Container c = new Container();
+		List<ValidationError> errors = validator.validate(arg, c);
 
 		if (errors.size() > 0) {
 			throw new BulkValidationException(errors);
+		} else {
+			return c.object;
 		}
 	}
 

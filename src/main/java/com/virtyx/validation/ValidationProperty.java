@@ -43,9 +43,9 @@ public class ValidationProperty {
 		return (ValidationEnum) this.type;
 	}
 	
-	public List<ValidationError> validate(String key, Object value) {
+	public List<ValidationError> validate(String key, Object value, Container container) {
 		log.debug("Type: {}", this.type);
-		return this.type.validateValue(key, value);
+		return this.type.validateValue(key, value, container);
 	}
 
 	public String getProperty() {

@@ -14,10 +14,13 @@ import com.virtyx.exception.ValidationError;
 public class ValidationEnumTest {
 	
 	private ValidationEnum<Planet> target;
+	
+	private Container c;
 
 	@Before
 	public void setup() {
 		target = new ValidationEnum<Planet>(null, Planet.class);
+		c = new Container();
 	}
 
 	@Test
@@ -29,7 +32,7 @@ public class ValidationEnumTest {
 			}
 		}).valid(Planet.EARTH); //THE ONE TRUE PLANET
 		
-		List<ValidationError> errors = target.validateValue("key", 2);
+		List<ValidationError> errors = target.validateValue("key", 2, c);
 		assertEquals(0, errors.size());
 	}
 	
@@ -37,7 +40,7 @@ public class ValidationEnumTest {
 	public void testConvertToEnumLambda() throws Exception {
 		target.fromInt( i-> Planet.values()[i] ).valid(Planet.EARTH); //THE ONE TRUE PLANET
 		
-		List<ValidationError> errors = target.validateValue("key", 2);
+		List<ValidationError> errors = target.validateValue("key", 2, c);
 		assertEquals(0, errors.size());
 	}
 	
@@ -45,7 +48,7 @@ public class ValidationEnumTest {
 	public void testValidAndConvert() throws Exception {
 		target.valid(Planet.EARTH).fromInt( (i)-> Planet.values()[i]);
 		
-		List<ValidationError> errors = target.validateValue("key", 2);
+		List<ValidationError> errors = target.validateValue("key", 2, c);
 		assertEquals(0, errors.size());
 	}
 	
