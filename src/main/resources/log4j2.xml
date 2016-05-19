@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration status="WARN">
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %x - %msg%n" />
+		</Console>
+	</Appenders>
+
+	<Loggers>
+
+		<Logger name="org.springframework.web" level="DEBUG" />
+		<Logger name="org.springframework.beans.factory.config" level="DEBUG" />
+		<Logger name="org.springframework.jdbc.core" level="TRACE" />
+		<Logger name="com.virtyx" level="DEBUG" />
+
+		<Root level="error">
+			<AppenderRef ref="Console" />
+		</Root>
+
+	</Loggers>
+</Configuration>

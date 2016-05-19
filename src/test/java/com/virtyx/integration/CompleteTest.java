@@ -44,7 +44,8 @@ public class CompleteTest {
 	@Test
 	public void testDenyUnknown() throws Exception {
 		target
-			.property("id").number().min(0);
+			.property("id").number().min(0)
+			.property("name").string().optional();
 		
 		json.put("id", 3);
 		json.put("random", "key");

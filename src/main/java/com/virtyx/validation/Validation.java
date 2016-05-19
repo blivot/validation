@@ -1,5 +1,6 @@
 package com.virtyx.validation;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeanWrapperImpl;
 
 import com.virtyx.exception.ValidationError;
 
@@ -33,12 +38,18 @@ import com.virtyx.exception.ValidationError;
  * @param <V>
  */
 public class Validation <V> {
+	
+	final protected Logger log = LogManager.getLogger();
 
 	private Class<V> clazz;
 
 	private Map<String, ValidationProperty> properties;
 
 	private boolean allowUnknown = false;
+	
+	private PropertyDescriptor[] pda;
+
+	private BeanWrapperImpl bw;
 
 	public Validation() {
 		this(null);
@@ -78,7 +89,7 @@ public class Validation <V> {
 			Set<String> visitedKeys = new HashSet<String>();
 
 			for (String key : properties.keySet()) {
-				System.out.println("VALIDATING: " + key);
+				log.debug("VALIDATING: " + key);
 				visitedKeys.add(key);
 				ValidationProperty prop = properties.get(key);
 				errs.addAll(prop.validate(key, coerced.get(key)));
@@ -114,13 +125,18 @@ public class Validation <V> {
 	public void setClazz(Class<V> clazz) {
 		this.clazz = clazz;
 		if (this.clazz != null) {
-			for (Field f : this.clazz.getClass().getDeclaredFields()) {
-				ValidationProperty vp = property(f.getName());
-				if (String.class.isAssignableFrom(f.getDeclaringClass())) {
-					vp.string();
-				} else if (Number.class.isAssignableFrom(f.getDeclaringClass())) {
-					vp.number();
-				}
+			
+			bw = new BeanWrapperImpl(clazz);
+			pda = bw.getPropertyDescriptors();
+			
+			for (PropertyDescriptor pd : pda) {
+				if (pd.getWriteMethod() == null) continue;
+				
+				log.debug("What: {}", pd.getWriteMethod());
+				String getter = pd.getReadMethod().getName(); // getMySampleProperty
+				String property = getter.replaceFirst("[a-z]+", ""); // MySampleProperty
+				property = property.substring(0, 1).toLowerCase() + property.substring(1); // mySampleProperty
+				property(property);
 			}
 		}
 	}

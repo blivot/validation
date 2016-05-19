@@ -2,9 +2,14 @@ package com.virtyx.converter;
 
 import java.util.function.Function;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.virtyx.exception.ConvertException;
 
 public class EnumFromIntConverter implements Converter<Enum<?>> {
+	
+	final protected Logger log = LogManager.getLogger();
 	
 	private Function<Integer, Enum<?>> method;
 	
@@ -13,8 +18,8 @@ public class EnumFromIntConverter implements Converter<Enum<?>> {
 	}
 	
 	public Enum<?> convert(Object obj) throws ConvertException {
-		System.out.println("COVERTING: "+ obj);
-		System.out.println("COVERTING: "+ method);
+		log.debug("COVERTING: "+ obj);
+		log.debug("COVERTING: "+ method);
 		if (
 				obj instanceof Integer
 		) {

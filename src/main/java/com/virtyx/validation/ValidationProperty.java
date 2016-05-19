@@ -2,9 +2,14 @@ package com.virtyx.validation;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.virtyx.exception.ValidationError;
 
 public class ValidationProperty {
+	
+	final protected Logger log = LogManager.getLogger();
 	
 	private Validation<?> parent;
 	
@@ -15,6 +20,7 @@ public class ValidationProperty {
 	public ValidationProperty(Validation<?> parent, String property) {
 		this.parent = parent; 
 		this.property = property;
+		this.type = new ValidationAny().required();
 	}
 	
 	public ValidationString string() {
@@ -33,6 +39,7 @@ public class ValidationProperty {
 	}
 	
 	public List<ValidationError> validate(String key, Object value) {
+		log.debug("Type: {}", this.type);
 		return this.type.validateValue(key, value);
 	}
 
