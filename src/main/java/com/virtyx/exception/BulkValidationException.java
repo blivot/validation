@@ -2,6 +2,7 @@ package com.virtyx.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BulkValidationException extends RuntimeException {
 	
@@ -20,6 +21,12 @@ public class BulkValidationException extends RuntimeException {
 
 	public void setErrors(List<ValidationError> errors) {
 		this.errors = errors;
+	}
+	
+	public List<String> getMessages() {
+		if (this.errors == null) return null;
+		
+		return errors.stream().map( e->e.getMessage()).collect(Collectors.toList());
 	}
 
 }
