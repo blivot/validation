@@ -61,11 +61,15 @@ public class Validation <V> {
 	}
 
 	public ValidationProperty property(String name) {
+		log.debug("Adding Validation on Property: {}", name);
 		if (properties.containsKey(name)) {
+			log.debug("Already have it! {}", properties.get("name"));
 			return properties.get("name");
 		}
+		log.debug("Making it instead");
 		ValidationProperty vp = new ValidationProperty(this, name);
 		addProperty(name, vp);
+		log.debug("Returning!");
 		return vp;
 	}
 
@@ -82,9 +86,11 @@ public class Validation <V> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ValidationError> validate(Object json) {
+		log.debug("VAlidate {}", json);
 
 		List<ValidationError> errs = new ArrayList<ValidationError>();
 		if (json instanceof Map) {
+			log.debug("It's a Map");
 			Map<String, Object> coerced = (Map<String, Object>)json;
 			Set<String> visitedKeys = new HashSet<String>();
 
@@ -136,6 +142,7 @@ public class Validation <V> {
 				String getter = pd.getReadMethod().getName(); // getMySampleProperty
 				String property = getter.replaceFirst("[a-z]+", ""); // MySampleProperty
 				property = property.substring(0, 1).toLowerCase() + property.substring(1); // mySampleProperty
+				log.debug("Adding Property: {}", property);
 				property(property);
 			}
 		}
