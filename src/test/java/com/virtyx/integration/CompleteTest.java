@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +15,8 @@ import com.virtyx.exception.ValidationError;
 import com.virtyx.validation.Validation;
 
 public class CompleteTest {
+	
+	final protected Logger log = LogManager.getLogger();
 
 	private Validation<Animal> target;
 	private Map<String, Object> json;
@@ -63,7 +67,8 @@ public class CompleteTest {
 	@Test
 	public void testAllowUnknown() throws Exception {
 		target
-			.property("id").number().min(0);
+			.property("id").number().min(0)
+			.property("name").string().optional();
 		
 		target.setAllowUnknown(true);
 		

@@ -33,6 +33,11 @@ public class ValidationProperty {
 		return (ValidationNumber) this.type;
 	}
 	
+	public ValidationBoolean bool() {
+		this.type = new ValidationBoolean(this.parent);
+		return (ValidationBoolean) this.type;
+	}
+	
 	public ValidationEnum enumm(Class<?> enumm) {
 		this.type = new ValidationEnum(this.parent, enumm);
 		return (ValidationEnum) this.type;
