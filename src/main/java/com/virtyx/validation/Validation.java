@@ -50,6 +50,9 @@ public class Validation <V> {
 	}
 
 	public ValidationProperty property(String name) {
+		if (properties.containsKey(name)) {
+			return properties.get("name");
+		}
 		ValidationProperty vp = new ValidationProperty(this, name);
 		addProperty(name, vp);
 		return vp;
@@ -112,7 +115,12 @@ public class Validation <V> {
 		this.clazz = clazz;
 		if (this.clazz != null) {
 			for (Field f : this.clazz.getClass().getDeclaredFields()) {
-
+				ValidationProperty vp = property(f.getName());
+				if (String.class.isAssignableFrom(f.getDeclaringClass())) {
+					vp.string();
+				} else if (Number.class.isAssignableFrom(f.getDeclaringClass())) {
+					vp.number();
+				}
 			}
 		}
 	}

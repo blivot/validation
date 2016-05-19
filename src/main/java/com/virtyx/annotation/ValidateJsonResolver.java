@@ -167,7 +167,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 
 	private Class<? extends ValidateJsonDefault> getValidationClass(MethodParameter parameter) {
 		ValidateJson annot = parameter.getParameterAnnotation(ValidateJson.class);
-		return annot.validate();
+		return annot.value();
 	}
 
 	/**

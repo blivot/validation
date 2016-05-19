@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 public @interface ValidateJson {
 	
 	@SuppressWarnings("rawtypes")
-	Class<? extends ValidateJsonDefault> validate() default ValidateJsonDefault.class;
+	Class<? extends ValidateJsonDefault> value() default ValidateJsonDefault.class;
 
 }
