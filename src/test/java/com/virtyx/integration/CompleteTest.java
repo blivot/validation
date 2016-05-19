@@ -41,6 +41,37 @@ public class CompleteTest {
 		);
 	}
 
+	@Test
+	public void testDenyUnknown() throws Exception {
+		target
+			.property("id").number().min(0);
+		
+		json.put("id", 3);
+		json.put("random", "key");
+
+		List<ValidationError> errors = target.validate(json);
+		assertEquals(1, errors.size());
+		
+		ValidationError error = errors.get(0);
+		assertEquals(
+				"Key 'random' was sent but is unnecessary",
+				error.getMessage()
+		);
+	}
+	
+	@Test
+	public void testAllowUnknown() throws Exception {
+		target
+			.property("id").number().min(0);
+		
+		target.setAllowUnknown(true);
+		
+		json.put("id", 3);
+		json.put("random", "key");
+
+		List<ValidationError> errors = target.validate(json);
+		assertEquals(0, errors.size());
+	}
 
 	/**
 	 * A Test Class
