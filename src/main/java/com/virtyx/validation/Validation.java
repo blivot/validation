@@ -64,12 +64,12 @@ public class Validation <V> {
 		log.debug("Adding Validation on Property: {}", name);
 		if (properties.containsKey(name)) {
 			log.debug("Already have it! {}", properties.get("name"));
-			return properties.get("name");
+			return properties.get(name);
 		}
 		log.debug("Making it instead");
 		ValidationProperty vp = new ValidationProperty(this, name);
 		addProperty(name, vp);
-		log.debug("Returning!");
+		log.debug("Returning! {}", vp);
 		return vp;
 	}
 
