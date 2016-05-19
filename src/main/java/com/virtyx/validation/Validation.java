@@ -111,7 +111,16 @@ public class Validation <V> {
 				List<ValidationError> innerErrors = prop.validate(key, coerced.get(key), c);
 				if (innerErrors.size() > 0) {
 					errs.addAll(innerErrors);	
-				} else {
+				} else if (c.object == null && coerced.get(key) == null && coerced.containsKey(key)) {
+					/*
+					 * This is a conscious thought on my part. If a user doesn't pass in
+					 * a value to an optional key, then c.object will be `null`, and we
+					 * totally can place that in the map. But then it's like, did the
+					 * _pass_ in a null, or did they pass in nothing? How do we know?
+					 * 
+					 * If they pass in null, (the key exists), and the object returned is
+					 * null, then we can place it in here. Otherwise, we won't.
+					 */
 					toReturn.put(key, c.object);
 				}
 			}
