@@ -47,6 +47,8 @@ public class Validation <V> {
 
 	private boolean allowUnknown = false;
 	
+	private boolean addPropertiesFromClass = true;
+	
 	private PropertyDescriptor[] pda;
 
 	private BeanWrapperImpl bw;
@@ -56,6 +58,11 @@ public class Validation <V> {
 	}
 
 	public Validation(Class<V> clazz) {
+		this(clazz, true);
+	}
+	
+	public Validation(Class<V> clazz, boolean addPropertiesFromClass) {
+		this.addPropertiesFromClass = addPropertiesFromClass;
 		this.properties = new HashMap<String, ValidationProperty>();
 		this.setClazz(clazz);
 	}
@@ -141,7 +148,7 @@ public class Validation <V> {
 
 	public void setClazz(Class<V> clazz) {
 		this.clazz = clazz;
-		if (this.clazz != null) {
+		if (this.clazz != null && addPropertiesFromClass) {
 			
 			bw = new BeanWrapperImpl(clazz);
 			pda = bw.getPropertyDescriptors();
@@ -163,5 +170,13 @@ public class Validation <V> {
 
 	public void setAllowUnknown(boolean allowUnknown) {
 		this.allowUnknown = allowUnknown;
+	}
+
+	public boolean isAddPropertiesFromClass() {
+		return addPropertiesFromClass;
+	}
+
+	public void setAddPropertiesFromClass(boolean addPropertiesFromClass) {
+		this.addPropertiesFromClass = addPropertiesFromClass;
 	}
 }
