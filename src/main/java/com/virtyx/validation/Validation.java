@@ -111,7 +111,10 @@ public class Validation <V> {
 				List<ValidationError> innerErrors = prop.validate(key, coerced.get(key), c);
 				if (innerErrors.size() > 0) {
 					errs.addAll(innerErrors);	
-				} else if (c.object == null && coerced.get(key) == null && coerced.containsKey(key)) {
+				} else if (
+						(c.object == null && coerced.get(key) == null && coerced.containsKey(key)) ||
+						c.object != null
+						) {
 					/*
 					 * This is a conscious thought on my part. If a user doesn't pass in
 					 * a value to an optional key, then c.object will be `null`, and we
