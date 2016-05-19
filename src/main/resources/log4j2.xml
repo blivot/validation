@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
-<Configuration status="WARN">
+<Configuration status="DEBUG">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout
@@ -13,9 +13,9 @@
 		<Logger name="org.springframework.web" level="DEBUG" />
 		<Logger name="org.springframework.beans.factory.config" level="DEBUG" />
 		<Logger name="org.springframework.jdbc.core" level="TRACE" />
-		<Logger name="com.virtyx" level="DEBUG" />
+		<Logger name="com.virtyx" level="TRACE" />
 
-		<Root level="error">
+		<Root level="TRACE">
 			<AppenderRef ref="Console" />
 		</Root>
 
