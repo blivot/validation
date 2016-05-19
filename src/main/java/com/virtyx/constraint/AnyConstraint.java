@@ -28,6 +28,25 @@ public abstract class AnyConstraint extends Constraint<Object> {
 			return String.format(ERROR, key);
 		}
 	}
+	
+	static public class Forbidden extends AnyConstraint {
+
+		private final static String ERROR = "'%s' is forbidden";
+
+		public Forbidden() {
+			super(Object.class);
+		}
+
+		@Override
+		public boolean valid(Object v) {
+			return v == null;
+		}
+
+		@Override
+		protected String getErrorMessage(String key, Object object) {
+			return String.format(ERROR, key);
+		}
+	}
 
 	static public class Valid extends AnyConstraint {
 

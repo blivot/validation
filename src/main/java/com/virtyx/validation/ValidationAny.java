@@ -95,6 +95,7 @@ public class ValidationAny <T, V extends ValidationAny> {
 	}
 	
 	public V forbidden() {
+		this.constraints.add(new AnyConstraint.Forbidden());
 		return getThis();
 	}
 	
@@ -110,5 +111,4 @@ public class ValidationAny <T, V extends ValidationAny> {
 	public V equal(Object value) {
 		return valid(value);
 	}
-
 }

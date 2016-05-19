@@ -11,11 +11,11 @@ import com.virtyx.exception.ValidationError;
 
 public class ValidationAnyTest {
 	
-	private ValidationAny target;
+	private ValidationAny<Object, ValidationAny<?, ?>> target;
 
 	@Before
 	public void setup() {
-		target = new ValidationAny(null);
+		target = new ValidationAny<Object, ValidationAny<?, ?>>(null);
 	}
 
 	@Test
@@ -65,6 +65,20 @@ public class ValidationAnyTest {
 	public void testInvalid5() throws Exception {
 		target.valid(new Boolean(true));
 		List<ValidationError> errors = target.validateValue("key", "1");
+		assertEquals(1, errors.size());
+	}
+	
+	@Test
+	public void testForbidden() throws Exception {
+		target.forbidden();
+		List<ValidationError> errors = target.validateValue("key", null);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testForbiddenInvalid() throws Exception {
+		target.forbidden();
+		List<ValidationError> errors = target.validateValue("key", "something");
 		assertEquals(1, errors.size());
 	}
 
