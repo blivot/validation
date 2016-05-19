@@ -139,11 +139,9 @@ public class Validation <V> {
 				if (pd.getWriteMethod() == null) continue;
 				
 				log.debug("What: {}", pd.getWriteMethod());
-				String getter = pd.getReadMethod().getName(); // getMySampleProperty
-				String property = getter.replaceFirst("[a-z]+", ""); // MySampleProperty
-				property = property.substring(0, 1).toLowerCase() + property.substring(1); // mySampleProperty
-				log.debug("Adding Property: {}", property);
-				property(property);
+				String name = pd.getName(); // sampleproperty
+				log.debug("Adding Property: {}", name);
+				property(name);
 			}
 		}
 	}
