@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.MethodParameter;
@@ -50,7 +49,7 @@ import com.virtyx.validation.Validation;
 
 public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 
-	final protected Logger log = Logger.getLogger("Validate Logger");
+	final protected Logger log = LogManager.getLogger();
 
 	protected List<HttpMessageConverter<?>> messageConverters;
 
@@ -67,10 +66,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 
 		for (HttpMessageConverter<?> messageConverter : getMessageConverters()) {
 			if (messageConverter.canRead(paramType, contentType)) {
-				log.log(
-						Level.INFO, "Reading [{}] as \"{}\" using [{}]",
-						new Object[] {paramType.getName(), contentType, messageConverter}
-				);
+				log.debug("Reading [{}] as \"{}\" using [{}]", paramType.getName(), contentType, messageConverter);
 				return ((HttpMessageConverter<T>) messageConverter).read(paramType, inputMessage);
 			}
 		}
@@ -95,20 +91,20 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, 
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
-		log.log(Level.INFO, "This is the big apple");
+		log.debug("This is the big apple");
 		String paramName = getParamName(parameter); 
-		log.log(Level.INFO, "Param Name REsolve: {}", paramName);
+		log.debug("Param Name REsolve: {}", paramName);
 		Object arg;
 		System.out.println("LOL GOT IT: " + paramName);
 
 		try {
 			arg = readWithMessageConverters(createInputMessage(webRequest, paramName), parameter, parameter.getParameterType());
-			log.log(Level.INFO, "CONVERTED and Created: {}", new Object[] {arg});
-			log.log(Level.INFO, "Created: {}", arg.getClass().toString());
+			log.debug("CONVERTED and Created: {}", new Object[] {arg});
+			log.debug("Created: {}", arg.getClass().toString());
 			validate(
 					arg,
 					getValidationClass(parameter)
-			);
+					);
 
 			if (arg != null) {
 				Annotation[] annotations = parameter.getParameterAnnotations();
@@ -127,7 +123,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		}
 		catch (MissingServletRequestParameterException ex) {
 			// handled below
-			log.log(Level.INFO, "EXCEPTION");
+			log.debug("EXCEPTION");
 			ex.printStackTrace();
 			arg = null;
 		}				
@@ -148,10 +144,10 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		ValidateJsonDefault validatorBuilder; 
 		Constructor<?> ctor = clazz.getConstructor();
 		validatorBuilder = (ValidateJsonDefault) ctor.newInstance();
-		
+
 		Validation validator = validatorBuilder.getValidation();
 		List<ValidationError> errors = validator.validate(arg);
-		
+
 		if (errors.size() > 0) {
 			throw new BulkValidationException(errors);
 		}
@@ -163,7 +159,7 @@ public class ValidateJsonResolver implements HandlerMethodArgumentResolver {
 		String paramName = ""; //(annot != null) ? annot.value() : "";
 		if (paramName.length() == 0) {
 			paramName = parameter.getParameterName();
-			log.log(Level.INFO, "Param Name: {}", paramName);
+			log.debug("Param Name: {}", paramName);
 			//			Assert.notNull(paramName, "Request parameter name for argument type [" + parameter.getParameterType().getName()
 			//					+ "] not available, and parameter name information not found in class file either.");
 		}
