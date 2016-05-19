@@ -6,6 +6,10 @@
 			<PatternLayout
 				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %x - %msg%n" />
 		</Console>
+		<File name="MyFile" fileName="/tmp/validator.log" append="false">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} %x - %msg%n" />
+		</File>
 	</Appenders>
 
 	<Loggers>
@@ -17,6 +21,7 @@
 
 		<Root level="TRACE">
 			<AppenderRef ref="Console" />
+			<AppenderRef ref="MyFile" />
 		</Root>
 
 	</Loggers>
