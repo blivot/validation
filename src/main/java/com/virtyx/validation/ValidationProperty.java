@@ -38,9 +38,10 @@ public class ValidationProperty {
 		return (ValidationBoolean) this.type;
 	}
 	
-	public ValidationEnum enumm(Class<?> enumm) {
-		this.type = new ValidationEnum(this.parent, enumm);
-		return (ValidationEnum) this.type;
+	@SuppressWarnings("unchecked")
+	public <E extends Enum<E>> ValidationEnum<E> enumm(Class<E> enumm) {
+		this.type = new ValidationEnum<E>(this.parent, enumm);
+		return (ValidationEnum<E>) this.type;
 	}
 	
 	public List<ValidationError> validate(String key, Object value, Container container) {
