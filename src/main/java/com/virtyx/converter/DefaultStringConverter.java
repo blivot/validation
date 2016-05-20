@@ -15,7 +15,7 @@ public class DefaultStringConverter implements Converter<String> {
 		) {
 			return obj.toString();
 		}
-		throw new ConvertException("Cannot convert to String!");
+		throw new ConvertException("String");
 	}
 
 }

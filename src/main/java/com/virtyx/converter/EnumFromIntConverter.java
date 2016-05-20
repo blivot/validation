@@ -25,6 +25,6 @@ public class EnumFromIntConverter implements Converter<Enum<?>> {
 		) {
 			return this.method.apply((Integer)obj);
 		}
-		throw new ConvertException("Cannot convert to Enum!");
+		throw new ConvertException("Enum");
 	}
 }

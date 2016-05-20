@@ -27,6 +27,13 @@ public abstract class AnyConstraint extends Constraint<Object> {
 		protected String getErrorMessage(String key, Object object) {
 			return String.format(ERROR, key);
 		}
+		
+		@Override
+		public boolean equals(Object other) {
+			if (other == null) return false;
+			
+			return other.getClass().equals(this.getClass());
+		}
 	}
 	
 	static public class Forbidden extends AnyConstraint {

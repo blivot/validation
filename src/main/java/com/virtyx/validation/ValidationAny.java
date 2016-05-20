@@ -24,7 +24,7 @@ public class ValidationAny <T, V extends ValidationAny> {
 	
 	final protected Logger log = LogManager.getLogger();
 
-	protected Collection<Constraint<?>> constraints;
+	protected List<Constraint<?>> constraints;
 
 	protected Converter<T> converter;
 	
@@ -37,6 +37,7 @@ public class ValidationAny <T, V extends ValidationAny> {
 	public ValidationAny(Validation<?> parent) {
 		this.parent = parent;
 		this.constraints = new ArrayList<Constraint<?>>();
+		required();
 	}
 	
 	public Validation<?> getParent() {
@@ -60,12 +61,13 @@ public class ValidationAny <T, V extends ValidationAny> {
 			} else {
 				toValidate = (T)value;
 			}
+			log.debug("Converted: {}", toValidate);
 		} catch (ConvertException | ClassCastException e) {
 			errs.add(
 					new ValidationError(
 							key,
 							value,
-							e.getMessage()
+							String.format("Cannot convert '%s' to %s", key, e.getMessage())
 					)
 			);
 			return errs;
@@ -94,15 +96,20 @@ public class ValidationAny <T, V extends ValidationAny> {
 	}
 	
 	public V required() {
-		this.constraints.add(new AnyConstraint.Required());
+		AnyConstraint.Required req = new AnyConstraint.Required();
+		if (!this.constraints.contains(req)) {
+			this.constraints.add(req);	
+		}
 		return getThis();
 	}
 	
 	public V optional() {
+		constraints.remove(new AnyConstraint.Required());
 		return getThis();
 	}
 	
 	public V forbidden() {
+		optional();
 		this.constraints.add(new AnyConstraint.Forbidden());
 		return getThis();
 	}
