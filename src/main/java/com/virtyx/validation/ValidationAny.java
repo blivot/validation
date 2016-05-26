@@ -151,8 +151,10 @@ public class ValidationAny <T, V extends ValidationAny> {
 	@SuppressWarnings("unchecked")
 	protected T convert(Object value) throws Exception {
 		T toValidate = null;
-		if (this.converter != null) {
-			toValidate = this.converter.convert(value);  				
+		if (this.converter != null && value != null) {
+			toValidate = this.converter.convert(value);
+		} else if (this.converter != null && value == null) {
+			return null; //Cannot convert a null value
 		} else if (value == null && defaultValue != null) {
 			toValidate = defaultValue;
 		} else {

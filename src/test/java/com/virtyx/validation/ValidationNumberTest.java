@@ -90,5 +90,28 @@ public class ValidationNumberTest {
 				error.getMessage()
 		);
 	}
+	
+	@Test
+	public void testMinMaxOptional() throws Exception {
+		target
+			.setDefault(3)
+			.min(1)
+			.max(7)
+			.optional();
+		List<ValidationError> errors = target.validateValue("key", null, c);
+		assertEquals(0, errors.size());
+		assertEquals(3, c.object);
+	}
+	
+	@Test
+	public void testMinMaxOptional2() throws Exception {
+		target
+			.setDefault(3)
+			.min(1)
+			.max(7)
+			.optional();
+		List<ValidationError> errors = target.validateValue("key", 1, c);
+		assertEquals(0, errors.size());
+	}
 
 }
