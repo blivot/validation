@@ -19,11 +19,40 @@ public class ValidationAnyTest {
 		target = new ValidationAny<Object, ValidationAny<?, ?>>(null);
 		c = new Container();
 	}
+	
+	@Test
+	public void testOnlyOneRequired() throws Exception {
+		assertEquals(1, target.hpConstraints.size());
+		target.required();
+		assertEquals(1, target.hpConstraints.size());
+	}
 
 	@Test
 	public void testValid() throws Exception {
 		target.valid("okay");
 		System.out.println("HERE 1");
+		List<ValidationError> errors = target.validateValue("key", "okay", c);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testTwoDifferentValids() throws Exception {
+		assertEquals(1, target.hpConstraints.size());
+		assertEquals(0, target.lpConstraints.size());
+		target.valid("okay");
+		assertEquals(1, target.lpConstraints.size());
+		target.valid("nice");
+		assertEquals(1, target.lpConstraints.size());
+		
+		List<ValidationError> errors = target.validateValue("key", "okay", c);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testTwoDifferentValidsArray() throws Exception {
+		target.valid(new String[]{"okay", "nice"});
+		assertEquals(1, target.lpConstraints.size());
+		
 		List<ValidationError> errors = target.validateValue("key", "okay", c);
 		assertEquals(0, errors.size());
 	}

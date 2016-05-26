@@ -9,9 +9,12 @@ import org.apache.logging.log4j.Logger;
 import com.virtyx.exception.ValidationError;
 import com.virtyx.exception.ValidationException;
 
-public abstract class Constraint <T> {
+@SuppressWarnings("rawtypes")
+public abstract class Constraint <T> implements Comparable<Constraint> {
 	
 	final protected Logger log = LogManager.getLogger();
+	
+	protected Integer priority = -1;
 
 	@SuppressWarnings("unchecked")
 	public List<ValidationError> validate(
@@ -63,5 +66,17 @@ public abstract class Constraint <T> {
 
 	protected List<ValidationError> createError(String key, Object value, String message) {
 		return createErrors(new ValidationError(key, value, message));
+	}
+	
+	public int compareTo(Constraint o) {
+		return this.getClass().getName().compareTo(o.getClass().getName());
+	}
+	
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
 }

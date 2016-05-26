@@ -15,13 +15,15 @@ public class ValidationString extends ValidationAny<String, ValidationString> {
 	}
 	
 	public ValidationString min(Integer min) {
-		this.constraints.add(new StringConstraint.Min(min));
-		return this;
+		return addConstraint(new StringConstraint.Min(min));
 	}
 	
 	public ValidationString max(Integer max) {
-		this.constraints.add(new StringConstraint.Max(max));
-		return this;
+		return addConstraint(new StringConstraint.Max(max));
+	}
+	
+	public ValidationString email() {
+		return addConstraint(new StringConstraint.Email());
 	}
 	
 	public ValidationString convertToString() {

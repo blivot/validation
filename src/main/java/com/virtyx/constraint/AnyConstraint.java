@@ -1,5 +1,9 @@
 package com.virtyx.constraint;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class AnyConstraint extends Constraint<Object> {
 
 	public AnyConstraint(Class<Object> type) {
@@ -16,6 +20,7 @@ public abstract class AnyConstraint extends Constraint<Object> {
 
 		public Required() {
 			super(Object.class);
+			this.priority = 10;
 		}
 
 		@Override
@@ -27,13 +32,6 @@ public abstract class AnyConstraint extends Constraint<Object> {
 		protected String getErrorMessage(String key, Object object) {
 			return String.format(ERROR, key);
 		}
-		
-		@Override
-		public boolean equals(Object other) {
-			if (other == null) return false;
-			
-			return other.getClass().equals(this.getClass());
-		}
 	}
 	
 	static public class Forbidden extends AnyConstraint {
@@ -42,6 +40,7 @@ public abstract class AnyConstraint extends Constraint<Object> {
 
 		public Forbidden() {
 			super(Object.class);
+			this.priority = 9;
 		}
 
 		@Override
@@ -59,21 +58,34 @@ public abstract class AnyConstraint extends Constraint<Object> {
 
 		private final static String ERROR = "'%s' must equal '%s'";
 
-		private Object value;
+		private List<Object> validValues;
 			
 		public Valid(Object value) {
 			super(Object.class);
-			this.value = value;
+			this.validValues = new ArrayList<Object>();
+			
+			if (Object[].class.isAssignableFrom(value.getClass())) {
+				Object[] casted = (Object[])value;
+				for (Object o : casted) {
+					this.addValidValue(o);
+				}
+			} else {
+				this.addValidValue(value);
+			}
+		}
+		
+		public void addValidValue(Object o) {
+			this.validValues.add(o);
 		}
 
 		@Override
 		public boolean valid(Object v) {
-			return v.equals(value);
+			return validValues.contains(v);
 		}
 
 		@Override
 		protected String getErrorMessage(String key, Object object) {
-			return String.format(ERROR, object, value);
+			return String.format(ERROR, object, validValues);
 		}
 	}
 }

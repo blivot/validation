@@ -106,4 +106,25 @@ public class ValidationStringTest {
 		assertEquals(0, errors.size());
 	}
 	
+	@Test
+	public void testEmail() throws Exception {
+		target.email();
+		List<ValidationError> errors = target.validateValue("key", "ethan@example.com", c);
+		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testBadEmail() throws Exception {
+		target.email();
+		List<ValidationError> errors = target.validateValue("key", "test", c);
+		assertEquals(1, errors.size());
+		
+		ValidationError error = errors.get(0);
+		assertEquals("key", error.getKey());
+		assertEquals(
+				"The string 'test' is not a valid email",
+				error.getMessage()
+		);
+	}
+	
 }

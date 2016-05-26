@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +14,8 @@ import com.virtyx.exception.ValidationError;
 
 //@SuppressWarnings("unchecked")
 public class ValidationEnumTest {
+	
+	final protected Logger log = LogManager.getLogger();
 	
 	private ValidationEnum<Planet> target;
 	
@@ -50,6 +54,20 @@ public class ValidationEnumTest {
 		
 		List<ValidationError> errors = target.validateValue("key", 2, c);
 		assertEquals(0, errors.size());
+	}
+	
+	@Test
+	public void testRequiredAndConvertWithNull() throws Exception {
+		target
+			.required()
+			.valid(Planet.JUPITER)
+			.fromInt( (i)-> Planet.values()[i]);
+		
+		List<ValidationError> errors = target.validateValue("key", null, c);
+		
+		assertEquals(1, errors.size());
+		ValidationError e = errors.get(0);
+		assertEquals("'key' is required", e.getMessage());
 	}
 	
 	private enum Planet {
