@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import com.virtyx.exception.ValidationError;
 
-//@SuppressWarnings("unchecked")
 public class ValidationEnumTest {
 
 	final protected Logger log = LogManager.getLogger();

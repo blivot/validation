@@ -44,6 +44,12 @@ public class ValidationProperty {
 		return (ValidationEnum<E>) this.type;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <E> ValidationList<E> list(Class<E> clazz) {
+		this.type = new ValidationList<E>(this.parent, clazz);
+		return (ValidationList<E>) this.type;
+	}
+	
 	public List<ValidationError> validate(String key, Object value, Container container) {
 		log.debug("Type: {}", this.type);
 		return this.type.validateValue(key, value, container);
