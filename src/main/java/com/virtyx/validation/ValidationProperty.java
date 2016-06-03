@@ -17,6 +17,7 @@ public class ValidationProperty {
 	
 	private ValidationAny<?, ?> type;
 	
+	@SuppressWarnings("rawtypes")
 	public ValidationProperty(Validation<?> parent, String property) {
 		this.parent = parent; 
 		this.property = property;
@@ -48,6 +49,11 @@ public class ValidationProperty {
 	public <E> ValidationList<E> list(Class<E> clazz) {
 		this.type = new ValidationList<E>(this.parent, clazz);
 		return (ValidationList<E>) this.type;
+	}
+	
+	public ValidationMap map() {
+		this.type = new ValidationMap(this.parent);
+		return (ValidationMap) this.type;
 	}
 	
 	public List<ValidationError> validate(String key, Object value, Container container) {
