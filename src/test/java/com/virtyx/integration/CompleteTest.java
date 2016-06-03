@@ -67,6 +67,7 @@ public class CompleteTest {
 		);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testAllowUnknown() throws Exception {
 		target
@@ -81,8 +82,12 @@ public class CompleteTest {
 		Container c = new Container();
 		List<ValidationError> errors = target.validate(json, c);
 		assertEquals(0, errors.size());
+		
+		Map<String, Object> validated = (Map<String, Object>)c.object;
+		assertEquals("key", validated.get("random"));
 	}
 
+	
 
 	/**
 	 * A Test Class

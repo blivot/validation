@@ -128,10 +128,9 @@ public class Validation <V> {
 				}
 			}
 
+			Set<String> unusedFields = new HashSet<String>(coerced.keySet());
+			unusedFields.removeAll(visitedKeys);
 			if (!allowUnknown) {
-				Set<String> unusedFields = new HashSet<String>(coerced.keySet());
-				unusedFields.removeAll(visitedKeys);
-
 				for (String s : unusedFields) {
 					errs.add(
 							new ValidationError(
@@ -140,6 +139,10 @@ public class Validation <V> {
 									String.format("Key '%s' was sent but is unnecessary", s)
 									)
 							);
+				}
+			} else {
+				for (String k : unusedFields) {
+					toReturn.put(k, coerced.get(k));
 				}
 			}
 			
