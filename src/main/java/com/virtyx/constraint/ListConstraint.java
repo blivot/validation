@@ -24,6 +24,8 @@ public abstract class ListConstraint extends Constraint<List> {
 		@Override
 		public boolean valid(List v) {
 			boolean isValid = true;
+			if (v == null) return isValid;
+			
 			for (Object o : v) {
 				if (!value.isAssignableFrom(o.getClass())) {
 					isValid = false;
